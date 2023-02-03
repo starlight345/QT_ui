@@ -7,4 +7,6 @@ make qt program to show images/videos/text
 
 # media.py
 - webcam sends the video to the screen in real-time
-- Todo: modify the number of video 3, on the same screen / Use saved video (not real-time)
+- Todo: 
+  - modify the number of video 3, on the same screen
+  - Use saved video (not real-time)
