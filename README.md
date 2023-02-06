@@ -11,7 +11,7 @@ make qt program to show images/videos/text
   - modify the number of video to 3, on the same screen
   - Use saved video (not real-time)
   
-#branch temp
+# branch temp
 - 처음 버튼 2개와 화면 2개 상태
 - Start2 작동 안함
 - Start1는 정상 작동
