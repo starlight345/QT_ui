@@ -32,7 +32,7 @@ class ShowVideo(QObject):
         print(real_path)
         self.cam = cv2.VideoCapture(real_path)
 
-        super().__init__()
+        super(ShowVideo, self).__init__()
 
 
 
@@ -78,19 +78,25 @@ class ShowVideo(QObject):
         self.flag = 1 - self.flag
 
 
+
 class ImageViewer(QtWidgets.QWidget):
     def __init__(self):
         super(ImageViewer, self).__init__()
         self.image = QtGui.QImage()
         self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
 
+    @QtCore.pyqtSlot()
+
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         painter.drawImage(0, 0, self.image)
         self.image = QtGui.QImage()
 
+    @QtCore.pyqtSlot()
+
     def initUI(self):
         self.setWindowTitle('Test')
+
 
     @QtCore.pyqtSlot(QtGui.QImage)
     def setImage(self, image):
@@ -110,8 +116,8 @@ if __name__ == '__main__':
     thread = QtCore.QThread()
     thread.start()
     vid1 = ShowVideo(serial_number = "SN_33594229")
+    vid2 = ShowVideo(serial_number = "SN_33594014")
     vid1.moveToThread(thread)
-    vid2 = ShowVideo(serial_number = 'SN_33594014')
     vid2.moveToThread(thread)
 
     image_viewer1 = ImageViewer()
@@ -131,7 +137,7 @@ if __name__ == '__main__':
     horizontal_layout.addWidget(image_viewer2)
     vertical_layout.addLayout(horizontal_layout)
     vertical_layout.addWidget(push_button1)
-    #vertical_layout.addWidget(push_button2)
+    vertical_layout.addWidget(push_button2)
 
     layout_widget = QtWidgets.QWidget()
     layout_widget.setLayout(vertical_layout)
