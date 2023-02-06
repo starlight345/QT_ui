@@ -7,9 +7,11 @@ import cv2
 
 class ShowVideo(QObject):
 
-    flag = 0
 
-    camera = cv2.VideoCapture(0)
+    flag = 0
+    
+    camera = cv2.VideoCapture("/dev/v4l/by-id/usb-WITHROBOT_Inc._oCam-5CRO-U-M_SN_33594014-video-index0")
+    #url = cv2.VideoCapture("./videos/")
     ret, image = camera.read()
     height, width = image.shape[:2]
 
@@ -89,19 +91,21 @@ if __name__ == '__main__':
 
     thread = QtCore.QThread()
     thread.start()
-    vid = ShowVideo()
-    vid.moveToThread(thread)
+    vid1 = ShowVideo(serial_number = 'SN_33594229')
+    vid1.moveToThread(thread)
+    vid2 = ShowVideo(serial_number = 'SN_33594014')
+    vid2.moveToThread(thread)
 
     image_viewer1 = ImageViewer()
     image_viewer2 = ImageViewer()
 
-    vid.VideoSignal1.connect(image_viewer1.setImage)
-    vid.VideoSignal2.connect(image_viewer2.setImage)
+    vid1.VideoSignal1.connect(image_viewer1.setImage)
+    vid2.VideoSignal2.connect(image_viewer2.setImage)
 
-    push_button1 = QtWidgets.QPushButton('Start')
-    push_button2 = QtWidgets.QPushButton('Canny')
-    push_button1.clicked.connect(vid.startVideo)
-    push_button2.clicked.connect(vid.canny)
+    push_button1 = QtWidgets.QPushButton('Start1')
+    push_button2 = QtWidgets.QPushButton('Start2')
+    push_button1.clicked.connect(vid1.startVideo)
+    push_button2.clicked.connect(vid2.startVideo)
 
     vertical_layout = QtWidgets.QVBoxLayout()
     horizontal_layout = QtWidgets.QHBoxLayout()
@@ -109,7 +113,7 @@ if __name__ == '__main__':
     horizontal_layout.addWidget(image_viewer2)
     vertical_layout.addLayout(horizontal_layout)
     vertical_layout.addWidget(push_button1)
-    vertical_layout.addWidget(push_button2)
+    #vertical_layout.addWidget(push_button2)
 
     layout_widget = QtWidgets.QWidget()
     layout_widget.setLayout(vertical_layout)
