@@ -2,7 +2,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
 import sys
-
+import os
 import cv2
 
 class ShowVideo(QObject):
@@ -10,29 +10,47 @@ class ShowVideo(QObject):
 
     flag = 0
     
-    camera = cv2.VideoCapture("/dev/v4l/by-id/usb-WITHROBOT_Inc._oCam-5CRO-U-M_SN_33594014-video-index0")
+    #camera = cv2.VideoCapture("/dev/v4l/by-id/usb-WITHROBOT_Inc._oCam-5CRO-U-M_"+serial_number+"-video-index0")
     #url = cv2.VideoCapture("./videos/")
-    ret, image = camera.read()
-    height, width = image.shape[:2]
+    
+
 
     VideoSignal1 = QtCore.pyqtSignal(QtGui.QImage)
     VideoSignal2 = QtCore.pyqtSignal(QtGui.QImage)
 
-    def __init__(self):
-        super(ShowVideo, self).__init__()
+    def __init__(self, serial_number):
+
+        
+        self.cam_name = "/dev/v4l/by-id/usb-WITHROBOT_Inc._oCam-5CRO-U-M_"+ serial_number +"-video-index0"
+        real_path=''
+        if os.path.exists(self.cam_name):
+            real_path = os.path.realpath(self.cam_name)
+        ##self.ret, self.image = self.cam_name.read()
+        #self.height, self.width = image.shape[:2]
+        
+    
+        print(real_path)
+        self.cam = cv2.VideoCapture(real_path)
+
+        super().__init__()
+
+
 
     @QtCore.pyqtSlot()
+
+
     def startVideo(self):
         global image
 
         run_video = True
         while run_video:
-            ret, image = self.camera.read()
+            ret, image = self.cam.read()
             color_swapped_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            h, w = image.shape[:2]
 
             qt_image1 = QtGui.QImage(color_swapped_image.data,
-                                    self.width,
-                                    self.height,
+                                    w,
+                                    h,
                                     color_swapped_image.strides[0],
                                     QtGui.QImage.Format_RGB888)
             self.VideoSignal1.emit(qt_image1)
@@ -43,8 +61,8 @@ class ShowVideo(QObject):
                 img_canny = cv2.Canny(img_gray, 50, 100)
 
                 qt_image2 = QtGui.QImage(img_canny.data,
-                                         self.width,
-                                         self.height,
+                                         w,
+                                         h,
                                          img_canny.strides[0],
                                          QtGui.QImage.Format_Grayscale8)
 
@@ -91,7 +109,7 @@ if __name__ == '__main__':
 
     thread = QtCore.QThread()
     thread.start()
-    vid1 = ShowVideo(serial_number = 'SN_33594229')
+    vid1 = ShowVideo(serial_number = "SN_33594229")
     vid1.moveToThread(thread)
     vid2 = ShowVideo(serial_number = 'SN_33594014')
     vid2.moveToThread(thread)
