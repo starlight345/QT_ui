@@ -142,7 +142,7 @@ if __name__ == '__main__':
     vid2 = ShowVideo2()
     vid2.moveToThread(thread2)
     # video 3
-    vid3 = ShowVideo2()
+    vid3 = ShowVideo3()
     vid3.moveToThread(thread3)
     
     image_viewer1 = ImageViewer()
