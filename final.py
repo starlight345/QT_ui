@@ -3,8 +3,14 @@ import cv2
 import sys
 from path import *
 
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
+from PyQt5.QtGui import QPixmap
+
+
+global image_num
+image_num = 1
 
 global index
 index = 0
@@ -76,15 +82,50 @@ class ImageViewer(QtWidgets.QWidget):
         self.update()
 
 
+#################################
+
+
+class image(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        global image_num
+    
+        self.initUI()
+        image_num += 1
+
+    def initUI(self):
+
+        global image_num
+
+        image_path = "./image/apple"+str(image_num)+".jpeg"
+        print(image_path, "->This is image_path")
+        pixmap = QPixmap(image_path)
+
+        label = QLabel()
+        label.setPixmap(pixmap)
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+    img1 = image()
+    img2 = image()
+    img3 = image()
 
 
     push_button = QtWidgets.QPushButton('Start')
     vertical_layout = QtWidgets.QVBoxLayout()
-    horizontal_layout = QtWidgets.QHBoxLayout()
-    vertical_layout.addLayout(horizontal_layout)
+    horizontal_layout1 = QtWidgets.QHBoxLayout()
+    horizontal_layout2 = QtWidgets.QHBoxLayout()
+    vertical_layout.addLayout(horizontal_layout1)
+    
+    vertical_layout.addLayout(horizontal_layout2)
     vertical_layout.addWidget(push_button)
+
+    horizontal_layout2.addWidget(img1)
+    horizontal_layout2.addWidget(img2)
+    horizontal_layout2.addWidget(img3)
+
     layout_widget = QtWidgets.QWidget()
     layout_widget.setLayout(vertical_layout)
 
@@ -100,7 +141,8 @@ if __name__ == '__main__':
     image_viewer1 = ImageViewer()
     vid.VideoSignal.connect(image_viewer1.setImage)
     push_button.clicked.connect(vid.startVideo)
-    horizontal_layout.addWidget(image_viewer1)
+    horizontal_layout1.addWidget(image_viewer1)
+    
 
     # video 2
     if len(cam_list) > 1: 
@@ -112,7 +154,7 @@ if __name__ == '__main__':
         image_viewer2 = ImageViewer()
         vid2.VideoSignal.connect(image_viewer2.setImage)
         push_button.clicked.connect(vid2.startVideo)
-        horizontal_layout.addWidget(image_viewer2)
+        horizontal_layout1.addWidget(image_viewer2)
     # video 3
     if len(cam_list) > 2: 
         index = 2
@@ -123,8 +165,9 @@ if __name__ == '__main__':
         image_viewer3 = ImageViewer()
         vid3.VideoSignal.connect(image_viewer3.setImage)
         push_button.clicked.connect(vid3.startVideo)
-        horizontal_layout.addWidget(image_viewer3)
+        horizontal_layout1.addWidget(image_viewer3)
     
     
+
     main_window.show()
     sys.exit(app.exec_())
