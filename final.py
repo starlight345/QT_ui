@@ -6,41 +6,35 @@ from path import *
 from PyQt5.QtCore import QObject
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
+global index
 index = 0
-first_flag = 0
-cam_list = cam_path()
 
+cam_list = cam_path()
 print(cam_list)
 
 class ShowVideo(QObject):
-    global index
-    print(index, "This is index")
-
-    print(cam_list[index], "---This is cam_list[index]")
-    camera = cv2.VideoCapture(str(cam_list[index]))
-
-    ret, image = camera.read()
-    height, width = image.shape[:2]
-
     VideoSignal = QtCore.pyqtSignal(QtGui.QImage)
 
-
-
     def __init__(self):
-        global index
         super(ShowVideo, self).__init__()
+
+        global index
+
+        print(index, "This is index!!!!")
+        print(cam_list[index], "---This is cam_list[index]")
+
+        self.camera = cv2.VideoCapture(str(cam_list[index]))
+
+        ret, image = self.camera.read()
+        self.height, self.width = image.shape[:2]
+
         index += 1
-    print(index, "This is index")
     
 
     @QtCore.pyqtSlot()
-
     def startVideo(self):
-        global image
 
-        run_video = True
-        while run_video:
+        while True:
             ret, image = self.camera.read()
             color_swapped_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -51,74 +45,10 @@ class ShowVideo(QObject):
                                     QtGui.QImage.Format_RGB888)
             self.VideoSignal.emit(qt_image1)
 
-
             loop = QtCore.QEventLoop()
             QtCore.QTimer.singleShot(25, loop.quit) #25 ms
             loop.exec_()
 
-
-
-'''
-class ShowVideo2(QObject):
-
-    camera = cv2.VideoCapture()
-    ret, image = camera.read()
-    height, width = image.shape[:2]
-
-    VideoSignal = QtCore.pyqtSignal(QtGui.QImage)
-
-
-    @QtCore.pyqtSlot()
-    def startVideo(self):
-        global image
-
-        run_video = True
-        while run_video:
-            ret, image = self.camera.read()
-            color_swapped_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-            qt_image1 = QtGui.QImage(color_swapped_image.data,
-                                    self.width,
-                                    self.height,
-                                    color_swapped_image.strides[0],
-                                    QtGui.QImage.Format_RGB888)
-            self.VideoSignal.emit(qt_image1)
-
-
-            loop = QtCore.QEventLoop()
-            QtCore.QTimer.singleShot(25, loop.quit) #25 ms
-            loop.exec_()
-
-class ShowVideo3(QObject):
-
-    camera = cv2.VideoCapture(cam_path("33594229"))
-    ret, image = camera.read()
-    height, width = image.shape[:2]
-
-    VideoSignal = QtCore.pyqtSignal(QtGui.QImage)
-
-
-    @QtCore.pyqtSlot()
-    def startVideo(self):
-        global image
-
-        run_video = True
-        while run_video:
-            ret, image = self.camera.read()
-            color_swapped_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-            qt_image1 = QtGui.QImage(color_swapped_image.data,
-                                    self.width,
-                                    self.height,
-                                    color_swapped_image.strides[0],
-                                    QtGui.QImage.Format_RGB888)
-            self.VideoSignal.emit(qt_image1)
-
-
-            loop = QtCore.QEventLoop()
-            QtCore.QTimer.singleShot(25, loop.quit) #25 ms
-            loop.exec_()
-'''
 class ImageViewer(QtWidgets.QWidget):
     def __init__(self):
         super(ImageViewer, self).__init__()
@@ -149,10 +79,6 @@ class ImageViewer(QtWidgets.QWidget):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 
-    
-
-
-
 
     push_button = QtWidgets.QPushButton('Start')
     vertical_layout = QtWidgets.QVBoxLayout()
@@ -175,8 +101,8 @@ if __name__ == '__main__':
     vid.VideoSignal.connect(image_viewer1.setImage)
     push_button.clicked.connect(vid.startVideo)
     horizontal_layout.addWidget(image_viewer1)
-    # video 2
 
+    # video 2
     if len(cam_list) > 1: 
         index = 1
         thread2 = QtCore.QThread()
