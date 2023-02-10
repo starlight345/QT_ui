@@ -8,3 +8,7 @@ make qt program to show images/videos/text
 
 # path.py
 - 현재 연결된 카메라들의 path를 리스트로 반환
+
+# chatgpt.py
+- 간격 조정된 영상 3개, 이미지 3개, 등급
+- 등급은 3초마다 1씩 증가
