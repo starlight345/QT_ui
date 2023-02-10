@@ -14,4 +14,4 @@ make qt program to show images/videos/text
 - 등급은 3초마다 1씩 증가
 
 # check_cam.py
-- 카메라 정상 연결 확인인
+- 카메라 정상 연결 확인
