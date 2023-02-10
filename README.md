@@ -12,3 +12,6 @@ make qt program to show images/videos/text
 # chatgpt.py
 - 간격 조정된 영상 3개, 이미지 3개, 등급
 - 등급은 3초마다 1씩 증가
+
+# check_cam.py
+- 카메라 정상 연결 확인인
